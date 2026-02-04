@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For Honey ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CARD STYLE */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%;
+            max-width: 400px;
+            height: 85vh; /* Taller to fit everything */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow-y: auto; /* Safety scroll if text is big */
+        }
+
+        /* TEXT STYLES */
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff4d6d;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #555;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+            transition: transform 0.2s, background 0.2s;
+            width: 80%;
+            max-width: 250px;
+            display: inline-block;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile */
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #ff4d6d;
+            border: 2px solid #ff4d6d;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 20px 20px 0 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #ff4d6d;
+            width: 10%;
+            transition: width 0.5s ease;
+        }
+
+        /* PAGE VISIBILITY */
+        .page {
+            display: none; /* Hidden by default */
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page.active {
+            display: flex; /* Only the active page is shown */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SPECIAL ELEMENTS */
+        .emoji-big {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Container for the Yes/No buttons to make sure No can move */
+        .final-buttons {
+            position: relative; 
+            width: 100%; 
+            height: 150px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+        }
+
+        #noBtn {
+            position: absolute; 
+            top: 70px; /* Start below the Yes button */
+            transition: 0.2s ease;
+        }
+        
+        .feedback {
+            color: #ff758c;
+            font-size: 0.9rem;
+            font-style: italic;
+            min-height: 20px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="page active" id="p1">
+            <div class="emoji-big">💌</div>
+            <h1>Hey Honey!</h1>
+            <p>I made a little "app" just for you. There are 10 little steps to complete.</p>
+            <p>Are you ready?</p>
+            <button class="btn" onclick="nextPage(2)">Yes, I'm ready!</button>
+        </div>
+
+        <div class="page" id="p2">
+            <div class="emoji-big">🤔</div>
+            <h1>Question 1</h1>
+            <p>Do you remember who made the first move?</p>
+            <button class="btn btn-secondary" onclick="handleFeedback(2, false)">Me (Alanis)</button>
+            <button class="btn btn-secondary" onclick="handleFeedback(2, true)">You (Sushi)</button>
+            <div class="feedback" id="feedback2"></div>
+        </div>
+
+        <div class="page" id="p3">
+            <div class="emoji-big">📏</div>
+            <h1>Question 2</h1>
+            <p>On a scale of 1 to 10, how much do you miss me right now?</p>
+            <button class="btn btn-secondary" onclick="nextPage(4)">10 (A lot)</button>
+            <button class="btn btn-secondary" onclick="nextPage(4)">1000000 (To Infinity)</button>
+        </div>
+
+        <div class="page" id="p4">
+            <div class="emoji-big">🍕</div>
+            <h1>Question 3</h1>
+            <p>When we finally meet, what is the FIRST thing we are eating?</p>
+            <button class="btn btn-secondary" onclick="nextPage(5)">Pizza</button>
+            <button class="btn btn-secondary" onclick="nextPage(5)">Sushi (The food!)</button>
+            <button class="btn btn-secondary" onclick="nextPage(5)">Anything as long as I'm with you</button>
+        </div>
+
+        <div class="page" id="p5">
+            <div class="emoji-big">🥺</div>
+            <h1>Question 4</h1>
+            <p>Long distance is tough.</p>
+            <p>But do you know why I think it's worth it?</p>
+            <button class="btn" onclick="nextPage(6)">Why?</button>
+        </div>
+
+        <div class="page" id="p6">
+            <div class="emoji-big">✨</div>
+            <h1>Because...</h1>
+            <p>Because you are the sweetest, most beautiful girl in the world.</p>
+            <p>And I'd wait forever if I had to.</p>
+            <button class="btn" onclick="nextPage(7)">Aww, continue</button>
+        </div>
+
+        <div class="page" id="p7">
+            <div class="emoji-big">🐛</div>
+            <h1>Question 5</h1>
+            <p>Important question: Would you still love me if I was a worm?</p>
+            <button class="btn btn-secondary" onclick="handleFeedback(7, true)">Yes, obviously</button>
+            <button class="btn btn-secondary" onclick="handleFeedback(7, false)">No way</button>
+            <div class="feedback" id="feedback7"></div>
+        </div>
+
+        <div class="page" id="p8">
+            <div class="emoji-big">🍣</div>
+            <h1>Question 6</h1>
+            <p>Who has the better nickname?</p>
+            <button class="btn btn-secondary" onclick="nextPage(9)">Honey (You)</button>
+            <button class="btn btn-secondary" onclick="nextPage(9)">Sushi (Me)</button>
+            <button class="btn" onclick="nextPage(9)">We are both cute</button>
+        </div>
+
+        <div class="page" id="p9">
+            <div class="emoji-big">❓</div>
+            <h1>The Final Question</h1>
+            <p><strong>Alanis</strong>, will you be my Valentine?</p>
+            
+            <div class="final-buttons">
+                <button class="btn" onclick="nextPage(10)" style="z-index: 10;">YES! ❤️</button>
+                
+                <button id="noBtn" class="btn btn-secondary" ontouchstart="moveButton(event)" onmouseover="moveButton(event)">No</button>
+            </div>
+        </div>
+
+        <div class="page" id="p10">
+            <div class="emoji-big">🎉</div>
+            <h1>YAYYY!</h1>
+            <p>I knew you'd say yes! 😉</p>
+            <p>I love you so much, Honey.</p>
+            <p>Happy Valentine's Day!</p>
+            <p style="color: #ff4d6d; font-weight: bold;">- Sushi</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SAFE JAVASCRIPT ---
+        
+        function nextPage(pageNumber) {
+            // Hide all pages
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+
+            // Show the next page
+            var target = document.getElementById('p' + pageNumber);
+            if(target) {
+                target.classList.add('active');
+                
+                // Update Progress Bar
+                var progressBar = document.getElementById('progressBar');
+                progressBar.style.width = (pageNumber * 10) + '%';
+            }
+
+            // If it's the last page, celebrate!
+            if (pageNumber === 10) {
+                launchConfetti();
+            }
+        }
+
+        function handleFeedback(pageId, isCorrect) {
+            var text = "";
+            
+            // LOGIC FOR ANSWERS
+            if (pageId === 2) {
+                if (isCorrect) text = "That's right! I'm smooth like that. Next!";
+                else text = "Haha, yeah right! But okay, Next!";
+            }
+            
+            if (pageId === 7) {
+                if (isCorrect) text = "Good answer. Worm-Sushi loves you. Next!";
+                else text = "Hey! You better say yes! Next!";
+            }
+
+            // Show the text
+            var feedbackEl = document.getElementById('feedback' + pageId);
+            if (feedbackEl) feedbackEl.innerText = text;
+
+            // Wait 1.5 seconds then move on
+            setTimeout(function() {
+                nextPage(pageId + 1);
+            }, 1500);
+        }
+
+        function moveButton(e) {
+            // Prevent default touch behavior (scrolling) if on mobile
+            if(e) e.preventDefault(); 
+
+            var btn = document.getElementById('noBtn');
+            
+            // Move within a 200px box
+            var x = Math.random() * 200 - 100;
+            var y = Math.random() * 150 - 50;
+            
+            btn.style.transform = "translate(" + x + "px, " + y + "px)";
+        }
+
+        function launchConfetti() {
+            // Simple confetti maker
+            setInterval(function() {
+                var heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '-10vh';
+                heart.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                heart.style.zIndex = '1000';
+                heart.style.animation = 'fall 3s linear';
+                
+                document.body.appendChild(heart);
+
+                // Cleanup
+                setTimeout(function() {
+                    heart.remove();
+                }, 3000);
+            }, 100);
+
+            // Add animation keyframes dynamically
+            var style = document.createElement('style');
+            style.innerHTML = '@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }';
+            document.head.appendChild(style);
+        }
+    </script>
+</body>
+</html>
