@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Honey 🌹</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c000e, #5a001a);
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* --- Canvas for Petals --- */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- Intro Screen (Envelope) --- */
+        #intro-screen {
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            cursor: pointer;
+            transition: opacity 1s ease;
+        }
+
+        .envelope {
+            width: 150px;
+            height: 100px;
+            background: #d6336c;
+            position: relative;
+            margin: 0 auto 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            border-left: 75px solid transparent;
+            border-right: 75px solid transparent;
+            border-top: 55px solid #ff6b9b;
+        }
+
+        .click-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- Main Content (Hidden Initially) --- */
+        #main-content {
+            opacity: 0;
+            z-index: 5;
+            text-align: center;
+            max-width: 80%;
+            transform: scale(0.8);
+            transition: all 1.5s ease;
+            display: none; /* Hidden strictly until click */
+        }
+
+        .rose-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 50, 0.8));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #ff4d79;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .nickname {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: #ffb3c6;
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .typing-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+
+        /* --- Animations --- */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .visible {
+            display: block !important;
+            opacity: 1 !important;
+            transform: scale(1) !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="petalCanvas"></canvas>
+
+    <div id="intro-screen" onclick="startExperience()">
+        <div class="envelope">
+            <span style="font-size: 30px;">💌</span>
+        </div>
+        <p class="click-text">Click for Honey</p>
+    </div>
+
+    <div id="main-content">
+        <div class="rose-icon">🌹</div>
+        <h1>Happy Rose Day</h1>
+        <p class="nickname">To my Baby Girl</p>
+        
+        <div class="message-box">
+            <p id="typewriter" class="typing-text"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const messageText = "To the most beautiful rose in the entire universe... 🌹 You don't just make my life beautiful, you make it bloom. I love you, Honey.";
+        const speed = 50; // Typing speed
+
+        // --- Logic to start the show ---
+        function startExperience() {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-content');
+            
+            // Fade out intro
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.classList.add('hidden');
+                
+                // Fade in main content
+                main.style.display = 'block';
+                setTimeout(() => {
+                    main.classList.add('visible');
+                    // Start typing
+                    typeWriter();
+                }, 100);
+            }, 1000);
+        }
+
+        // --- Typewriter Effect ---
+        let i = 0;
+        function typeWriter() {
+            if (i < messageText.length) {
+                document.getElementById("typewriter").innerHTML += messageText.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        // --- Falling Petals Animation (Canvas) ---
+        const canvas = document.getElementById('petalCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const petals = [];
+        const petalCount = 60;
+
+        class Petal {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 15 + 10;
+                this.speedY = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2 - 1;
+                this.color = `rgba(${255}, ${Math.random() * 50 + 50}, ${Math.random() * 50 + 50}, ${Math.random() * 0.5 + 0.3})`;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                // Draw a simple petal shape using bezier curves
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(this.size / 2, -this.size / 2, this.size, 0, 0, this.size);
+                ctx.bezierCurveTo(-this.size, 0, -this.size / 2, -this.size / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initPetals() {
+            for (let j = 0; j < petalCount; j++) {
+                petals.push(new Petal());
+            }
+        }
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach(petal => {
+                petal.update();
+                petal.draw();
+            });
+            requestAnimationFrame(animatePetals);
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        initPetals();
+        animatePetals();
+
+    </script>
+</body>
+</html>
